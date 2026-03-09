@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DS Manager</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+background:radial-gradient(circle at center,#1e293b,#020617);
+font-family:Arial;
+color:white;
+overflow:hidden;
+}
+
+/* Rotate message */
+
+.rotate{
+position:fixed;
+width:100%;
+height:100%;
+background:#020617;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:26px;
+z-index:100;
+}
+
+@media (orientation:landscape){
+.rotate{display:none;}
+}
+
+/* MAIN SCREEN */
+
+.game{
+width:100vw;
+height:100vh;
+display:grid;
+grid-template-columns:200px 1fr 200px;
+grid-template-rows:80px 1fr 100px;
+padding:15px;
+gap:15px;
+box-sizing:border-box;
+}
+
+/* PLAYER PANEL (K) */
+
+.player{
+background:#0f172a;
+border-radius:12px;
+padding:12px;
+box-shadow:0 0 10px #000;
+}
+
+.player div{
+margin-bottom:4px;
+}
+
+/* CURRENCY BAR */
+
+.top{
+grid-column:2/4;
+display:flex;
+justify-content:flex-end;
+align-items:center;
+gap:10px;
+}
+
+.money{
+background:#0f172a;
+padding:8px 14px;
+border-radius:8px;
+font-size:14px;
+box-shadow:0 0 8px #000;
+}
+
+/* SIDE BUTTONS */
+
+.menu{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.menu button{
+background:linear-gradient(#22c55e,#15803d);
+border:none;
+padding:16px;
+font-size:17px;
+border-radius:10px;
+color:white;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.5);
+transition:0.2s;
+}
+
+.menu button:hover{
+transform:scale(1.05);
+}
+
+/* CENTER PANEL */
+
+.center{
+background:#0f172a;
+border-radius:15px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+box-shadow:0 0 15px #000;
+}
+
+/* ADS */
+
+.ads{
+grid-column:1/4;
+background:#020617;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="rotate">
+Rotate your device to landscape
+</div>
+
+<div class="game">
+
+<!-- K -->
+<div class="player">
+<div>LV 1</div>
+<div>Username: Sammy</div>
+<div>XP: 0 / 100</div>
+</div>
+
+<!-- G H I J -->
+<div class="top">
+
+<div class="money">G-Cash 200</div>
+<div class="money">💎 10</div>
+<div class="money">Coins 500</div>
+<div class="money">R-Cash 0</div>
+
+</div>
+
+<!-- A B C -->
+<div class="menu">
+<button onclick="openMarket()">Market</button>
+<button onclick="openStore()">Store</button>
+<button onclick="openRewards()">Rewards</button>
+</div>
+
+<!-- F -->
+<div class="center">
+Ranked Table
+</div>
+
+<!-- D E -->
+<div class="menu">
+<button onclick="openClub()">Club</button>
+<button onclick="playMatch()">Play Now</button>
+</div>
+
+<!-- Banner -->
+<div class="ads">
+Banner Ads
+</div>
+
+</div>
+
+<script>
+
+function openMarket(){
+alert("Market opening");
+}
+
+function openStore(){
+alert("Store opening");
+}
+
+function openRewards(){
+alert("Rewards opening");
+}
+
+function openClub(){
+alert("Club opening");
+}
+
+function playMatch(){
+alert("Starting match...");
+}
+
+</script>
+
+</body>
+</html>
