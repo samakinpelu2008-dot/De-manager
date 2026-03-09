@@ -1,205 +1,218 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DS Manager</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>OLUWAKEMI LENS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Arial',sans-serif;}
+body{background:linear-gradient(135deg,#f9f4ef,#ffe3c5);}
 
-body{
-margin:0;
-background:radial-gradient(circle at center,#1e293b,#020617);
-font-family:Arial;
-color:white;
-overflow:hidden;
+/* HEADER */
+header{
+position:fixed; top:0; width:100%;
+background:linear-gradient(90deg,#ffd966,#fbb03b);
+display:flex; justify-content:space-between; align-items:center;
+padding:18px 40px;
+box-shadow:0 4px 20px rgba(0,0,0,0.2); z-index:1002;
+border-bottom-left-radius:20px; border-bottom-right-radius:20px;
+animation:shimmer 3s infinite alternate;
 }
+@keyframes shimmer{
+0%{background:linear-gradient(90deg,#ffd966,#fbb03b);}
+50%{background:linear-gradient(90deg,#fbb03b,#ffd966);}
+100%{background:linear-gradient(90deg,#ffd966,#fbb03b);}
+}
+.logo {font-size:28px; font-weight:bold; color:white; letter-spacing:1px;}
+.menu-btn{font-size:28px; cursor:pointer; color:white; z-index:1004;}
 
-/* Rotate message */
-
-.rotate{
+/* MENU AND OVERLAY */
+.menu{
 position:fixed;
+top:0;
+left:-280px;
+width:280px;
+height:100%;
+background:white;
+padding-top:100px;
+transition:0.4s;
+box-shadow:4px 0 20px rgba(0,0,0,0.1);
+border-radius:0 20px 20px 0;
+z-index:1003; 
+}
+.menu a{display:block; padding:18px 30px; text-decoration:none; color:#222; font-size:18px;}
+.menu a:hover{background:linear-gradient(90deg,#ffd966,#fbb03b); color:white;}
+.overlay{
+position:fixed;
+top:0;
+left:0;
 width:100%;
 height:100%;
-background:#020617;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:26px;
-z-index:100;
+background:rgba(0,0,0,0.5);
+display:none;
+z-index:1002; 
 }
 
-@media (orientation:landscape){
-.rotate{display:none;}
+/* HERO CARD */
+.hero-card-wrapper{
+position:relative; max-width:900px; margin:140px auto 60px auto; height:450px;
 }
-
-/* MAIN SCREEN */
-
-.game{
-width:100vw;
-height:100vh;
-display:grid;
-grid-template-columns:200px 1fr 200px;
-grid-template-rows:80px 1fr 100px;
-padding:15px;
-gap:15px;
-box-sizing:border-box;
+.hero-glow{
+position:absolute; top:0; left:0; width:100%; height:100%; border-radius:25px;
+background:radial-gradient(circle, rgba(255,223,102,0.3), transparent 70%);
+z-index:0; animation:glowPulse 5s infinite alternate;
+filter:blur(40px);
 }
-
-/* PLAYER PANEL (K) */
-
-.player{
-background:#0f172a;
-border-radius:12px;
-padding:12px;
-box-shadow:0 0 10px #000;
+@keyframes glowPulse{
+0%{transform:scale(1); opacity:0.4;}
+50%{transform:scale(1.1); opacity:0.6;}
+100%{transform:scale(1); opacity:0.4;}
 }
-
-.player div{
-margin-bottom:4px;
+.hero-card{
+border-radius:25px; overflow:hidden;
+box-shadow:0 12px 35px rgba(0,0,0,0.3); position:relative; background:linear-gradient(135deg,#ffecd2,#fcb69f);
+height:450px; transition:0.5s;
+z-index:1; 
+transform:translateY(0px);
 }
-
-/* CURRENCY BAR */
-
-.top{
-grid-column:2/4;
-display:flex;
-justify-content:flex-end;
-align-items:center;
-gap:10px;
-}
-
-.money{
-background:#0f172a;
-padding:8px 14px;
-border-radius:8px;
-font-size:14px;
-box-shadow:0 0 8px #000;
-}
-
-/* SIDE BUTTONS */
-
-.menu{
-display:flex;
-flex-direction:column;
-gap:15px;
-}
-
-.menu button{
-background:linear-gradient(#22c55e,#15803d);
-border:none;
-padding:16px;
-font-size:17px;
-border-radius:10px;
-color:white;
-cursor:pointer;
-box-shadow:0 4px 10px rgba(0,0,0,0.5);
-transition:0.2s;
-}
-
-.menu button:hover{
+.hero-card img{
+width:100%; height:450px; object-fit:cover; position:absolute; opacity:0; transition:1s;
+border-radius:25px;
 transform:scale(1.05);
 }
-
-/* CENTER PANEL */
-
-.center{
-background:#0f172a;
-border-radius:15px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:24px;
-box-shadow:0 0 15px #000;
+.hero-card img.active{opacity:1;}
+.hero-text{
+position:absolute; bottom:40px; left:40px; color:white;
+max-width:450px; text-shadow:2px 2px 15px rgba(0,0,0,0.7);
+z-index:2;
 }
-
-/* ADS */
-
-.ads{
-grid-column:1/4;
-background:#020617;
-border-radius:10px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:20px;
+.hero-text h1{font-size:42px; margin-bottom:12px; font-family:serif;}
+.hero-text p{margin-bottom:18px; font-size:20px;}
+.hero-text button{
+padding:14px 30px; border:none; background:linear-gradient(90deg,#ffd966,#fbb03b); color:white; cursor:pointer; border-radius:15px;
+font-weight:bold; transition:0.3s;
 }
+.hero-text button:hover{transform:scale(1.05);}
 
+/* FEATURED PRODUCTS */
+.section{padding:60px 40px;}
+.section h2{text-align:center; margin-bottom:50px; font-size:36px; color:#333;}
+.products{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:30px;}
+.card{
+background:white; border-radius:25px; overflow:hidden;
+box-shadow:0 8px 25px rgba(0,0,0,0.15); transition:0.5s, box-shadow 0.5s;
+border:2px solid transparent;
+z-index:1;
+animation:float 4s ease-in-out infinite;
+}
+@keyframes float{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-6px);}
+100%{transform:translateY(0px);}
+}
+.card:hover{transform:translateY(-12px); box-shadow:0 16px 35px rgba(0,0,0,0.3); border:2px solid #ffd966;}
+.card img{width:100%; height:220px; object-fit:cover; transition:0.4s;}
+.card:hover img{transform:scale(1.05);}
+.card-info{padding:18px;}
+.card-info h3{margin-bottom:8px; color:#222;}
+.price{color:#555; font-weight:bold;}
+
+/* FOOTER */
+footer{
+background:linear-gradient(135deg,#ffd966,#fbb03b); color:#222; padding:30px 40px; text-align:center; border-top-left-radius:20px; border-top-right-radius:20px;
+font-weight:bold;
+}
+footer p{margin:10px 0; font-size:16px;}
+
+/* MEDIA */
+@media(max-width:768px){
+.hero-text{left:20px;}
+header{padding:15px 20px;}
+}
 </style>
 </head>
-
 <body>
 
-<div class="rotate">
-Rotate your device to landscape
+<header>
+<div class="menu-btn" onclick="openMenu()"><i class="fas fa-bars"></i></div>
+<div class="logo">OLUWAKEMI LENS</div>
+</header>
+
+<div class="menu" id="menu">
+<a href="#">Home</a>
+<a href="#">About</a>
+<a href="#">Products</a>
+<a href="#">Custom Lenses</a>
+<a href="#">Reviews</a>
+<a href="#">Contact</a>
+</div>
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- HERO CARD WITH GOLDEN GLOW -->
+<div class="hero-card-wrapper">
+<div class="hero-glow"></div>
+<div class="hero-card" id="heroCard">
+<img class="active" src="https://images.unsplash.com/photo-1511499767150-a48a237f0083">
+<img src="https://images.unsplash.com/photo-1598300056393-4aac492f4344">
+<img src="https://images.unsplash.com/photo-1577801594057-6e88f0d8e4a7">
+<div class="hero-text">
+<h1>OLUWAKEMI LENS</h1>
+<p>Premium Eyewear & Custom Lenses</p>
+<button>Shop Now</button>
+</div>
+</div>
 </div>
 
-<div class="game">
-
-<!-- K -->
-<div class="player">
-<div>LV 1</div>
-<div>Username: Sammy</div>
-<div>XP: 0 / 100</div>
+<!-- FEATURED PRODUCTS -->
+<section class="section">
+<h2>Featured Glasses</h2>
+<div class="products">
+<div class="card">
+<img src="https://images.unsplash.com/photo-1585386959984-a41552231658">
+<div class="card-info"><h3>Classic Frame</h3><p class="price">~</p></div>
 </div>
-
-<!-- G H I J -->
-<div class="top">
-
-<div class="money">G-Cash 200</div>
-<div class="money">💎 10</div>
-<div class="money">Coins 500</div>
-<div class="money">R-Cash 0</div>
-
+<div class="card">
+<img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f">
+<div class="card-info"><h3>Modern Lens</h3><p class="price">~</p></div>
 </div>
-
-<!-- A B C -->
-<div class="menu">
-<button onclick="openMarket()">Market</button>
-<button onclick="openStore()">Store</button>
-<button onclick="openRewards()">Rewards</button>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1583006170798-0fce5c8f47c3">
+<div class="card-info"><h3>Luxury Frame</h3><p class="price">~</p></div>
 </div>
-
-<!-- F -->
-<div class="center">
-Ranked Table
 </div>
+</section>
 
-<!-- D E -->
-<div class="menu">
-<button onclick="openClub()">Club</button>
-<button onclick="playMatch()">Play Now</button>
-</div>
-
-<!-- Banner -->
-<div class="ads">
-Banner Ads
-</div>
-
-</div>
+<!-- FOOTER -->
+<footer>
+<p>© 2026 OLUWAKEMI LENS. All rights reserved.</p>
+</footer>
 
 <script>
-
-function openMarket(){
-alert("Market opening");
+function openMenu(){
+document.getElementById("menu").style.left="0";
+document.getElementById("overlay").style.display="block";
+}
+function closeMenu(){
+document.getElementById("menu").style.left="-280px";
+document.getElementById("overlay").style.display="none";
 }
 
-function openStore(){
-alert("Store opening");
-}
+/* HERO SLIDER */
+let slides=document.querySelectorAll(".hero-card img"), index=0;
+setInterval(()=>{
+slides[index].classList.remove("active");
+index++;
+if(index>=slides.length) index=0;
+slides[index].classList.add("active");
+},4000);
 
-function openRewards(){
-alert("Rewards opening");
-}
-
-function openClub(){
-alert("Club opening");
-}
-
-function playMatch(){
-alert("Starting match...");
-}
-
+/* HERO FLOAT ON SCROLL */
+window.addEventListener("scroll",()=>{
+let scroll = window.scrollY;
+document.getElementById("heroCard").style.transform = `translateY(${scroll*0.1}px)`;
+});
 </script>
 
 </body>
