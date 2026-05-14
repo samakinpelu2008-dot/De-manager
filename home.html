@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard | AlphaBase FC</title>
+    <link rel="manifest" href="manifest.json">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
@@ -20,136 +21,161 @@
             font-family: -apple-system, system-ui, sans-serif;
             margin: 0; padding: 20px;
             padding-bottom: 40px;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- Top Bar --- */
-        .top-bar {
+        /* --- Header --- */
+        .header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 30px; margin-top: 10px;
         }
 
-        .profile-section { display: flex; align-items: center; gap: 12px; }
-        .avatar { 
-            width: 40px; height: 40px; border-radius: 12px; 
-            background: linear-gradient(45deg, #0A84FF, #5856D6);
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .currency-box {
-            background: var(--glass); border: 1px solid var(--border);
-            padding: 8px 15px; border-radius: 20px;
-            font-weight: 700; color: var(--green); font-size: 14px;
-        }
-
-        /* --- Hero: Upcoming Match --- */
-        .match-card {
-            background: linear-gradient(145deg, rgba(10, 132, 255, 0.15), rgba(0,0,0,0));
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-circle { 
+            width: 44px; height: 44px; border-radius: 14px; 
+            background: linear-gradient(135deg, #1a1a1a, #000);
             border: 1px solid var(--border);
-            border-radius: 28px; padding: 25px; margin-bottom: 25px;
-            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--blue);
+        }
+
+        .balance {
+            background: var(--glass); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: 20px;
+            font-weight: 800; color: var(--green); font-size: 14px;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        /* --- Hero Card --- */
+        .hero-card {
+            background: linear-gradient(160deg, rgba(10, 132, 255, 0.1), transparent);
+            border: 1px solid var(--border);
+            border-radius: 30px; padding: 25px; margin-bottom: 25px;
             backdrop-filter: blur(10px);
+            position: relative;
         }
 
-        .match-card::before {
-            content: 'NEXT MATCH';
-            position: absolute; top: 15px; right: 20px;
-            font-size: 10px; font-weight: 900; opacity: 0.3; letter-spacing: 1px;
+        .hero-label {
+            font-size: 10px; font-weight: 900; opacity: 0.3;
+            letter-spacing: 2px; margin-bottom: 15px; display: block;
         }
 
-        .teams-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        .team-box { text-align: center; width: 40%; }
-        .team-name { font-size: 18px; font-weight: 800; margin-top: 8px; }
-        .vs { font-size: 12px; font-weight: 900; color: var(--blue); opacity: 0.8; }
+        .match-display { display: flex; justify-content: space-between; align-items: center; }
+        .team { text-align: center; flex: 1; }
+        .team-name { font-size: 18px; font-weight: 800; margin-top: 10px; }
+        .vs-badge { 
+            font-size: 12px; font-weight: 900; color: var(--blue);
+            background: rgba(10, 132, 255, 0.1);
+            padding: 4px 10px; border-radius: 8px;
+        }
 
-        .play-btn {
+        .play-now {
             background: var(--blue); color: white; border: none;
-            width: 100%; padding: 14px; border-radius: 16px;
-            font-weight: 700; margin-top: 20px; font-size: 15px;
+            width: 100%; padding: 16px; border-radius: 18px;
+            font-weight: 700; margin-top: 25px; font-size: 16px;
+            box-shadow: 0 10px 20px rgba(10, 132, 255, 0.2);
         }
 
-        /* --- Navigation Grid --- */
-        .nav-grid {
+        /* --- Grid Navigation --- */
+        .menu-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
         }
 
-        .nav-item {
+        .menu-item {
             background: var(--glass); border: 1px solid var(--border);
-            border-radius: 24px; padding: 20px;
-            display: flex; flex-direction: column; align-items: flex-start;
-            gap: 12px; text-decoration: none; color: inherit;
+            border-radius: 26px; padding: 20px;
+            text-decoration: none; color: inherit;
+            display: flex; flex-direction: column; gap: 12px;
+            transition: 0.2s;
         }
 
-        .nav-item i { color: var(--blue); }
-        .nav-title { font-weight: 700; font-size: 15px; }
-        .nav-sub { font-size: 11px; opacity: 0.4; }
+        .menu-item:active { transform: scale(0.96); background: rgba(255,255,255,0.08); }
+        .menu-item i { color: var(--blue); }
+        .menu-title { font-weight: 700; font-size: 15px; }
+        .menu-sub { font-size: 11px; opacity: 0.4; }
 
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="profile-section">
-            <div class="avatar"><i data-lucide="user" size="20"></i></div>
+    <div class="header">
+        <div class="user-info">
+            <div class="avatar-circle"><i data-lucide="user" size="22"></i></div>
             <div>
-                <div style="font-size: 12px; opacity: 0.5;">Head Coach</div>
-                <div style="font-weight: 700; font-size: 16px;">Samuel</div>
+                <div style="font-size: 11px; opacity: 0.5; text-transform: uppercase;">Coach</div>
+                <div style="font-weight: 700; font-size: 17px;">Samuel</div>
             </div>
         </div>
-        <div class="currency-box">
-            <span style="font-size: 10px; opacity: 0.6; color: white; margin-right: 4px;">$</span> 25,400
+        <div class="balance">
+            <i data-lucide="coins" size="14"></i> 25,400
         </div>
     </div>
 
-    <!-- Hero Match Section -->
-    <div class="match-card">
-        <div class="teams-row">
-            <div class="team-box">
-                <i data-lucide="shield" size="32" color="#0A84FF"></i>
+    <div class="hero-card">
+        <span class="hero-label">UPCOMING MATCH</span>
+        <div class="match-display">
+            <div class="team">
+                <i data-lucide="shield" size="36" color="#0A84FF"></i>
                 <div class="team-name">ALB</div>
             </div>
-            <div class="vs">VS</div>
-            <div class="team-box">
-                <i data-lucide="shield" size="32" color="#FF453A"></i>
+            <div class="vs-badge">VS</div>
+            <div class="team-box team">
+                <i data-lucide="shield" size="36" color="#FF453A"></i>
                 <div class="team-name">CITY</div>
             </div>
         </div>
-        <button class="play-btn" onclick="window.location.href='match.html'">Kick Off</button>
+        <button class="play-now" onclick="window.location.href='match.html'">Enter Match</button>
     </div>
 
-    <!-- Navigation Grid -->
-    <div class="nav-grid">
-        <a href="squad.html" class="nav-item">
-            <i data-lucide="layout"></i>
+    <div class="menu-grid">
+        <a href="squad.html" class="menu-item">
+            <i data-lucide="layout-template"></i>
             <div>
-                <div class="nav-title">Squad</div>
-                <div class="nav-sub">Tactics & Lineup</div>
+                <div class="menu-title">Squad</div>
+                <div class="menu-sub">Tactics & Lineup</div>
             </div>
         </a>
-        <a href="market.html" class="nav-item">
-            <i data-lucide="shopping-cart"></i>
+        <a href="market.html" class="menu-item">
+            <i data-lucide="shopping-bag"></i>
             <div>
-                <div class="nav-title">Market</div>
-                <div class="nav-sub">Scout Players</div>
+                <div class="menu-title">Market</div>
+                <div class="menu-sub">Scout & Buy</div>
             </div>
         </a>
-        <a href="training.html" class="nav-item">
-            <i data-lucide="dumbbell"></i>
+        <a href="training.html" class="menu-item">
+            <i data-lucide="zap"></i>
             <div>
-                <div class="nav-title">Training</div>
-                <div class="nav-sub">Boost Stats</div>
+                <div class="menu-title">Training</div>
+                <div class="menu-sub">Boost Players</div>
             </div>
         </a>
-        <a href="admin.html" class="nav-item">
-            <i data-lucide="database"></i>
+        <a href="admin.html" class="menu-item">
+            <i data-lucide="shield-alert"></i>
             <div>
-                <div class="nav-title">Admin</div>
-                <div class="nav-sub">Manage Data</div>
+                <div class="menu-title">Admin</div>
+                <div class="menu-sub">Control Center</div>
             </div>
         </a>
     </div>
 
     <script>
         lucide.createIcons();
+
+        // PWA Persistent Install Logic
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('PWA: Ready to install');
+        });
+
+        // This can be called from a button in settings later
+        function triggerInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt = null;
+            }
+        }
     </script>
 </body>
 </html>
