@@ -6,21 +6,22 @@ const ASSETS = [
     'squad.html',
     'match.html',
     'admin.html',
+    'images/icon-512.png',
     'images/jersey.png',
     'https://unpkg.com/lucide@latest'
 ];
 
-// Install Event - Caching Assets
+// Install: Cache all files
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS);
         })
     );
-    self.skipWaiting(); // Force the waiting service worker to become the active one
+    self.skipWaiting();
 });
 
-// Activate Event - Cleaning up old caches
+// Activate: Remove old versions
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
@@ -31,7 +32,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch Event - Serve from cache, then update
+// Fetch: Serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
