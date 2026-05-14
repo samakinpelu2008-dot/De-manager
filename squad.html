@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Squad | AlphaBase FC</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #050505;
+            --pitch: #1a2e1a;
+            --blue: #0A84FF;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: -apple-system, sans-serif;
+            margin: 0; padding: 0;
+            overflow: hidden; /* Fixes pitch dragging */
+        }
+
+        /* --- Header --- */
+        .top-nav {
+            padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5,5,5,0.8); backdrop-filter: blur(10px);
+            position: absolute; top: 0; width: 100%; z-index: 10;
+            box-sizing: border-box;
+        }
+
+        .back-link { color: var(--blue); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+
+        /* --- The Pitch --- */
+        .pitch-container {
+            width: 100vw; height: 100vh;
+            background: var(--pitch);
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 10% 10%;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+        }
+
+        /* Tactical Lines (CSS Drawing) */
+        .pitch-lines {
+            position: absolute; width: 90%; height: 80%;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+
+        .center-circle {
+            position: absolute; width: 100px; height: 100px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        /* --- Player Disks --- */
+        .player-node {
+            position: absolute;
+            width: 55px; height: 55px;
+            background: var(--glass);
+            border: 1px solid var(--blue);
+            border-radius: 50%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .player-node i { color: white; margin-bottom: -2px; }
+        .player-number { font-size: 10px; font-weight: 800; opacity: 0.6; }
+        .player-label { 
+            position: absolute; bottom: -22px; 
+            font-size: 10px; font-weight: 700; 
+            background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        /* --- Formation Switcher --- */
+        .formation-pill {
+            position: absolute; bottom: 100px;
+            background: var(--glass); border: 1px solid var(--border);
+            padding: 8px 20px; border-radius: 30px;
+            display: flex; gap: 15px; font-size: 12px; font-weight: 700;
+            backdrop-filter: blur(15px);
+        }
+
+        .active-form { color: var(--blue); }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="home.html" class="back-link"><i data-lucide="chevron-left" size="18"></i> Back</a>
+        <div style="font-weight: 800; letter-spacing: 1px;">SQUAD TACTICS</div>
+        <i data-lucide="info" size="18" style="opacity: 0.5;"></i>
+    </div>
+
+    <div class="pitch-container">
+        <div class="pitch-lines"></div>
+        <div class="center-circle"></div>
+
+        <!-- Example Player Nodes (Positions controlled by JS/Data) -->
+        <div class="player-node" style="top: 15%; left: 30%;">
+            <i data-lucide="shield"></i>
+            <span class="player-number">9</span>
+            <div class="player-label">Osimhen</div>
+        </div>
+
+        <div class="player-node" style="top: 15%; left: 60%;">
+            <i data-lucide="shield"></i>
+            <span class="player-number">7</span>
+            <div class="player-label">Saka</div>
+        </div>
+
+        <div class="player-node" style="top: 80%; left: 45%;">
+            <i data-lucide="shield" color="#FFD60A"></i>
+            <span class="player-number">1</span>
+            <div class="player-label">Nwabali</div>
+        </div>
+
+        <!-- Formation Control -->
+        <div class="formation-pill">
+            <span class="active-form">4-3-3</span>
+            <span style="opacity:0.2">|</span>
+            <span>4-4-2</span>
+            <span style="opacity:0.2">|</span>
+            <span>3-5-2</span>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Future Logic: Drag and Drop functionality
+        // Future Logic: Function to swap positions based on formation choice
+    </script>
+</body>
+</html>
