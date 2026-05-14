@@ -13,66 +13,99 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             font-family: -apple-system, sans-serif; color: white;
-            overflow: hidden;
         }
 
-        .loader {
-            width: 80px; height: 80px; border-radius: 22px;
-            background: rgba(255,255,255,0.05);
+        /* Branding */
+        .logo-box {
+            width: 90px; height: 90px;
+            background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
             display: flex; align-items: center; justify-content: center;
-            color: #0A84FF; box-shadow: 0 0 30px rgba(10, 132, 255, 0.2);
-            animation: pulse 2s infinite;
+            color: #0A84FF; margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .title { font-weight: 800; font-size: 26px; letter-spacing: -0.5px; margin-bottom: 10px; }
+        .status { font-size: 12px; opacity: 0.4; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; }
+
+        /* Progress Bar Container */
+        .loader-track {
+            width: 200px; height: 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px; overflow: hidden;
+            position: relative;
         }
 
-        /* Update Prompt Style */
-        #update-toast {
-            position: fixed; bottom: 30px;
-            background: #0A84FF; color: white;
-            padding: 15px 25px; border-radius: 50px;
-            font-weight: 700; display: none;
-            box-shadow: 0 10px 30px rgba(10, 132, 255, 0.4);
-            z-index: 1000; cursor: pointer;
+        /* The Moving Bar */
+        .loader-fill {
+            position: absolute; top: 0; left: 0;
+            width: 0%; height: 100%;
+            background: #0A84FF;
+            box-shadow: 0 0 15px #0A84FF;
+            transition: width 0.4s ease; /* Smooth glide */
         }
     </style>
 </head>
 <body>
 
-    <div class="loader"><i data-lucide="shield-check" size="40"></i></div>
-    <h2 style="margin-top:20px; letter-spacing:1px;">ALPHABASE</h2>
+    <div class="logo-box">
+        <i data-lucide="shield-check" size="48"></i>
+    </div>
 
-    <!-- Update Notification -->
-    <div id="update-toast" onclick="location.reload()">
-        New Update Available! Tap to Refresh
+    <div class="title">ALPHABASE</div>
+    <div class="status" id="status-text">Initializing Systems</div>
+
+    <div class="loader-track">
+        <div class="loader-fill" id="progress-bar"></div>
     </div>
 
     <script>
         lucide.createIcons();
 
-        // Register Service Worker with Update Logic
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                reg.addEventListener('updatefound', () => {
-                    const newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // Display the update toast
-                            document.getElementById('update-toast').style.display = 'block';
-                        }
-                    });
+        const bar = document.getElementById('progress-bar');
+        const status = document.getElementById('status-text');
+
+        // Logic to simulate real resource loading
+        function startBoot() {
+            let progress = 0;
+            
+            // 1. Start Initializing
+            setTimeout(() => {
+                progress = 30;
+                bar.style.width = progress + "%";
+                status.innerText = "Syncing Assets";
+            }, 500);
+
+            // 2. Service Worker Check
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').then(() => {
+                    setTimeout(() => {
+                        progress = 70;
+                        bar.style.width = progress + "%";
+                        status.innerText = "Optimizing Database";
+                        
+                        // 3. Final Leap
+                        setTimeout(() => {
+                            progress = 100;
+                            bar.style.width = progress + "%";
+                            status.innerText = "Welcome Coach";
+                            
+                            // Finish & Redirect
+                            setTimeout(() => {
+                                window.location.href = 'home.html';
+                            }, 800);
+                        }, 1000);
+                    }, 1000);
                 });
-            });
+            } else {
+                // Fallback for non-PWA browsers
+                bar.style.width = "100%";
+                setTimeout(() => { window.location.href = 'home.html'; }, 1000);
+            }
         }
 
-        // Delay redirect to show off the splash screen
-        setTimeout(() => {
-            window.location.href = 'home.html';
-        }, 2500);
+        window.onload = startBoot;
     </script>
 </body>
 </html>
