@@ -1,190 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SYRIX SCORE</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
-<style>
-body { margin:0; font-family:Poppins,sans-serif; background:#0b0f1a; color:white; }
-header { text-align:center; font-size:22px; font-weight:bold; margin-top:10px; }
-.search-wrapper { display:flex; justify-content:center; margin-top:5px; }
-.search-box { display:flex; align-items:center; background:#1f2937; padding:10px 12px; border-radius:60px; width:82%; max-width:520px; }
-.search-box input { background:transparent; border:none; outline:none; color:white; margin-left:12px; width:100%; }
-.sports-wrapper { margin-top:10px; padding-left:10px; }
-.sports-scroll { display:flex; gap:10px; overflow-x:auto; }
-.sport { background:#1f2937; padding:5px 5px; border-radius:20px; font-size:14px; color:#d1d5db; }
-.sport.active { background:#3b82f6; color:white; }
-.top-controls { display:flex; justify-content:center; gap:12px; margin:15px 10px; }
-.live-btn { background:#ef4444; padding:8px 14px; border-radius:50px; font-size:13px; font-weight:600; }
-.date-nav { display:flex; align-items:center; gap:12px; background:#1f2937; padding:8px 16px; border-radius:50px; }
-.date-nav button { background:none; border:none; color:white; font-size:18px; }
-#currentDate { font-size:14px; font-weight:600; }
-.league-section { margin:20px 10px; }
-.league-header { display:flex; justify-content:space-between; margin-bottom:1px; }
-.league-left { display:flex; align-items:center; gap:8px; }
-.league-left img { width:22px; }
-.arrow{ font-size:30px; }
-.match-row { display:flex; align-items:center; background:#1f2937; padding:8px 10px; border-radius:12px; margin-bottom:8px; }
-.match-time-box { width:60px; height:44px; display:flex; flex-direction:column; justify-content:center; align-items:center; border-right:1px solid #2a2f3a; margin-right:8px; padding-right:8px; }
-.match-date { font-size:9px; color:#9ca3af; line-height:1; }
-.match-time { font-size:13px; font-weight:600; line-height:1; }
-.live { color:#ef4444; }
-.ft { color:#9ca3af; }
-.upcoming { color:#3b82f6; }
-.match-center { flex:1; }
-.team-line { display:flex; justify-content:space-between; align-items:center; margin:2px 0; }
-.team-left { display:flex; align-items:center; gap:6px; }
-.team-left img { width:18px; height:18px; object-fit:contain; border-radius:50%; }
-.team-left span { font-size:13px; }
-.team-score { font-weight:600; font-size:13px; }
-.match-right { width:25px; text-align:right; font-size:14px; color:#9ca3af; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AlphaBase FC</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background: #050505;
+            margin: 0; height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            font-family: -apple-system, sans-serif; color: white;
+            overflow: hidden;
+        }
+
+        .loader {
+            width: 80px; height: 80px; border-radius: 22px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            color: #0A84FF; box-shadow: 0 0 30px rgba(10, 132, 255, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Update Prompt Style */
+        #update-toast {
+            position: fixed; bottom: 30px;
+            background: #0A84FF; color: white;
+            padding: 15px 25px; border-radius: 50px;
+            font-weight: 700; display: none;
+            box-shadow: 0 10px 30px rgba(10, 132, 255, 0.4);
+            z-index: 1000; cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-<header>SYRIX SCORE</header>
+    <div class="loader"><i data-lucide="shield-check" size="40"></i></div>
+    <h2 style="margin-top:20px; letter-spacing:1px;">ALPHABASE</h2>
 
-<!-- SEARCH -->
-<div class="search-wrapper">
-  <div class="search-box">
-    <i data-lucide="search"></i>
-    <input type="text" placeholder="Search clubs, leagues...">
-  </div>
-</div>
+    <!-- Update Notification -->
+    <div id="update-toast" onclick="location.reload()">
+        New Update Available! Tap to Refresh
+    </div>
 
-<!-- SPORTS -->
-<div class="sports-wrapper">
-  <div class="sports-scroll">
-    <div class="sport active">Football</div>
-    <div class="sport">Basketball</div>
-    <div class="sport">Table Tennis</div>
-    <div class="sport">Tennis</div>
-  </div>
-</div>
+    <script>
+        lucide.createIcons();
 
-<!-- TOP -->
-<div class="top-controls">
-  <div class="live-btn">LIVE</div>
-  <div class="date-nav">
-    <button id="prevDate">‹</button>
-    <div id="currentDate">Today</div>
-    <button id="nextDate">›</button>
-  </div>
-</div>
+        // Register Service Worker with Update Logic
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // Display the update toast
+                            document.getElementById('update-toast').style.display = 'block';
+                        }
+                    });
+                });
+            });
+        }
 
-<!-- MATCHES CONTAINER -->
-<div id="matchesContainer"></div>
-
-<script>
-lucide.createIcons();
-
-// --- DATE NAVIGATION ---
-let current = new Date();
-const dateText = document.getElementById("currentDate");
-function formatDate(date) {
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate()+1);
-  if(date.toDateString()===today.toDateString()) return "Today";
-  if(date.toDateString()===tomorrow.toDateString()) return "Tomorrow";
-  return date.toLocaleDateString("en-US",{weekday:"long", day:"numeric"});
-}
-function updateDate(){ dateText.textContent = formatDate(current); }
-document.getElementById("prevDate").onclick = () => { current.setDate(current.getDate()-1); updateDate(); loadMatches(current); };
-document.getElementById("nextDate").onclick = () => { current.setDate(current.getDate()+1); updateDate(); loadMatches(current); };
-updateDate();
-
-// --- API SETTINGS ---
-const API_KEY = "6c5061fa6726f029dad097ab08be91d6"; 
-const API_URL = "https://v3.football.api-sports.io";
-
-// Leagues IDs in order
-const leagueOrder = [
-  39, 140, 135, 78, 61, 88, 262, 137, 102, 253, 266
-];
-const cupOrder = [2,3,4,6,9];
-
-// --- FETCH MATCHES ---
-async function fetchMatches(date){
-  const res = await fetch(`${API_URL}/fixtures?date=${date.toISOString().split("T")[0]}`, {
-    headers: { "x-apisports-key": API_KEY }
-  });
-  const data = await res.json();
-  return data.response;
-}
-
-// --- SORT MATCHES ---
-function sortMatches(matches){
-  return matches.sort((a,b)=>{
-    const aIndex = leagueOrder.indexOf(a.league.id)!==-1?leagueOrder.indexOf(a.league.id):cupOrder.indexOf(a.league.id)+leagueOrder.length;
-    const bIndex = leagueOrder.indexOf(b.league.id)!==-1?leagueOrder.indexOf(b.league.id):cupOrder.indexOf(b.league.id)+leagueOrder.length;
-    return aIndex - bIndex;
-  });
-}
-
-// --- RENDER MATCHES ---
-function renderMatches(matches){
-  const container = document.getElementById("matchesContainer");
-  container.innerHTML="";
-  let currentLeague=null;
-  matches.forEach(match=>{
-    if(currentLeague!==match.league.id){
-      currentLeague=match.league.id;
-      const leagueDiv = document.createElement("div");
-      leagueDiv.className="league-section";
-      leagueDiv.innerHTML=`<div class="league-header">
-        <div class="league-left">
-          <img src="${match.league.logo}"/> ${match.league.name}
-        </div>
-        <div class="arrow">›</div>
-      </div>`;
-      container.appendChild(leagueDiv);
-    }
-
-    const matchDiv = document.createElement("div");
-    matchDiv.className="match-row";
-
-    const statusClass = match.fixture.status.short==="FT"?"ft":
-                        match.fixture.status.short==="LIVE"?"live":"upcoming";
-    const matchTime = match.fixture.status.short==="FT"?"FT":
-                      match.fixture.status.short==="LIVE"?match.fixture.status.elapsed+"'":
-                      new Date(match.fixture.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
-    matchDiv.innerHTML=`
-      <div class="match-time-box">
-        <div class="match-date">${new Date(match.fixture.date).toLocaleDateString("en-GB",{day:'2-digit', month:'short'})}</div>
-        <div class="match-time ${statusClass}">${matchTime}</div>
-      </div>
-      <div class="match-center">
-        <div class="team-line">
-          <div class="team-left">
-            <img src="${match.teams.home.logo}"> ${match.teams.home.name}
-          </div>
-          <div class="team-score">${match.goals.home??0}</div>
-        </div>
-        <div class="team-line">
-          <div class="team-left">
-            <img src="${match.teams.away.logo}"> ${match.teams.away.name}
-          </div>
-          <div class="team-score">${match.goals.away??0}</div>
-        </div>
-      </div>
-      <div class="match-right">☆</div>
-    `;
-    container.appendChild(matchDiv);
-  });
-}
-
-// --- LOAD MATCHES ---
-async function loadMatches(date){
-  const rawMatches = await fetchMatches(date);
-  const sorted = sortMatches(rawMatches);
-  renderMatches(sorted);
-}
-
-// Initial load
-loadMatches(new Date());
-</script>
+        // Delay redirect to show off the splash screen
+        setTimeout(() => {
+            window.location.href = 'home.html';
+        }, 2500);
+    </script>
 </body>
 </html>
